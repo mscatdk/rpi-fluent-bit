@@ -13,8 +13,14 @@ RUN git clone https://github.com/fluent/fluent-bit && \
     cmake ../ &&\
     make
     
-FROM resin/rpi-raspbian:stretch
-RUN mkdir /root/config
+FROM alpine:3.7
+
+RUN apk update && \
+    apk upgrade && \
+    apk add libc6-compat && \
+    mkdir /root/config && \
+    rm -rf /var/cache/apk/*
+
 WORKDIR /root
 COPY --from=builder /tmp/fluent-bit/build/bin/fluent-bit .
 COPY config/fluent-bit.conf /root/config/fluent-bit.conf
